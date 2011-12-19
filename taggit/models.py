@@ -8,13 +8,26 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 
 class TagBase(models.Model):
     name = models.CharField(verbose_name=_('Name'), max_length=100)
-    slug = models.SlugField(verbose_name=_('Slug'), unique=True, max_length=100)
 
     def __unicode__(self):
         return self.name
 
     class Meta:
         abstract = True
+
+
+class Tag(TagBase):
+    class Meta:
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+
+
+class SluggedTag(TagBase):
+    slug = models.SlugField(verbose_name=_('Slug'), unique=True, max_length=100)
+
+    class Meta:
+        verbose_name = _("SluggedTag")
+        verbose_name_plural = _("SluggedTags")
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.slug:
@@ -49,13 +62,6 @@ class TagBase(models.Model):
         if i is not None:
             slug += "_%d" % i
         return slug
-
-
-class Tag(TagBase):
-    class Meta:
-        verbose_name = _("Tag")
-        verbose_name_plural = _("Tags")
-
 
 
 class ItemBase(models.Model):
